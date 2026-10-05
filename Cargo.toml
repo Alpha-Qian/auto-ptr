@@ -1,6 +1,6 @@
 [package]
 name = "auto_ptr"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2021"
 
 description = "The ultimate RAII smart pointer for Rust. Bringing the proven, elegant memory management philosophy of C++98 to the modern era with Zero-Cost Ownership Transfer™."
