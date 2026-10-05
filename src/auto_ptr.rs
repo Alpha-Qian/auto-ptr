@@ -16,8 +16,31 @@ impl<T: ?Sized> AutoPtr<T> {
         Self(NonNull::new(ptr).into())
     }
 
+    /// # Safety:
+    ///   The ptr should can be free
     pub unsafe fn from_raw(ptr: *mut T) -> Self {
         Self(NonNull::new(ptr).into())
+    }
+
+    pub fn move_from(auto_ptr: &Self) -> Self {
+        auto_ptr.clone()
+    }
+
+    pub fn from_box(boxed: Box<T>) -> Self {
+        Self(NonNull::new(Box::into_raw(boxed)).into())
+    }
+
+    pub fn into_box(&self) -> Option<Box<T>> {
+        let ptr = self.0.replace(None)?;
+        unsafe{ Some( Box::from_raw(ptr.as_ptr())) }
+    }
+
+    pub fn into_ptr(&self) -> *mut T {
+        unsafe{ transmute(self.0.replace(None)) }
+    }
+
+    pub fn into_nonnull(&self) -> Option<NonNull<T>> {
+        self.0.replace(None)
     }
 }
 
