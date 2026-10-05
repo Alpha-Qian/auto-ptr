@@ -1,13 +1,12 @@
-
-
-
 use std::{cell::Cell, hint::unreachable_unchecked, mem::transmute, ops::{Deref, DerefMut}, process, ptr::{self, NonNull}};
+
 
 pub struct AutoPtr<T: ?Sized>(
     Cell<Option<NonNull<T>>>,
 );
 
 impl<T: ?Sized> AutoPtr<T> {
+    
     pub fn new(value: T) -> Self
     where 
         T: Sized
@@ -21,7 +20,13 @@ impl<T: ?Sized> AutoPtr<T> {
     pub unsafe fn from_raw(ptr: *mut T) -> Self {
         Self(NonNull::new(ptr).into())
     }
+    
+    /// To avoid cumbersome lifetime checks and mimic C++'s implicit copy behavior, &self is used here instead of self.
+    pub fn move_into(&self) -> Self {
+        self.clone()
+    }
 
+    /// To avoid cumbersome lifetime checks and mimic C++'s implicit copy behavior, &self is used here instead of self.
     pub fn move_from(auto_ptr: &Self) -> Self {
         auto_ptr.clone()
     }
@@ -30,15 +35,18 @@ impl<T: ?Sized> AutoPtr<T> {
         Self(NonNull::new(Box::into_raw(boxed)).into())
     }
 
+    /// To avoid cumbersome lifetime checks and mimic C++'s implicit copy behavior, &self is used here instead of self.
     pub fn into_box(&self) -> Option<Box<T>> {
         let ptr = self.0.replace(None)?;
         unsafe{ Some( Box::from_raw(ptr.as_ptr())) }
     }
 
+    /// To avoid cumbersome lifetime checks and mimic C++'s implicit copy behavior, &self is used here instead of self.
     pub fn into_ptr(&self) -> *mut T {
         unsafe{ transmute(self.0.replace(None)) }
     }
 
+    /// To avoid cumbersome lifetime checks and mimic C++'s implicit copy behavior, &self is used here instead of self.
     pub fn into_nonnull(&self) -> Option<NonNull<T>> {
         self.0.replace(None)
     }

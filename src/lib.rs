@@ -28,9 +28,9 @@
 //! let data = AutoPtr::new(String::from("Revolutionary Performance"));
 //! assert_eq!(*data, "Revolutionary Performance");
 //!
-//! // 2. Fluid Ownership Transfer via .clone()
+//! // 2. Fluid Ownership Transfer via .move_into()
 //! // The resource elegantly flows from 'data' to 'active_data'.
-//! let active_data = data.clone();
+//! let active_data = data.move_into();
 //! assert_eq!(*active_data, "Revolutionary Performance");
 //!
 //! // 3. Hardware-Enforced Silicon Validation
