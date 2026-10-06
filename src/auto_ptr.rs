@@ -1,19 +1,11 @@
-use std::{cell::Cell, hint::unreachable_unchecked, mem::transmute, ops::{Deref, DerefMut}, process, ptr::{self, NonNull}};
-
+use std::{cell::Cell, hint::unreachable_unchecked, mem::{self, MaybeUninit, transmute}, ops::{Deref, DerefMut}, process, ptr::{self, NonNull}};
+//use std::vec::Vec;
 
 pub struct AutoPtr<T: ?Sized>(
     Cell<Option<NonNull<T>>>,
 );
 
 impl<T: ?Sized> AutoPtr<T> {
-    
-    pub fn new(value: T) -> Self
-    where 
-        T: Sized
-    {
-        let ptr = Box::into_raw(Box::new(value));
-        Self(NonNull::new(ptr).into())
-    }
 
     /// # Safety:
     ///   The ptr should can be free
@@ -48,10 +40,27 @@ impl<T: ?Sized> AutoPtr<T> {
 
     /// To avoid cumbersome lifetime checks and mimic C++'s implicit copy behavior, &self is used here instead of self.
     pub fn into_nonnull(&self) -> Option<NonNull<T>> {
+        //let a = Vec::new();
+        //a.sort();
         self.0.replace(None)
     }
 }
 
+impl<T> AutoPtr<T> {
+    pub fn new(value: T) -> Self {
+        let ptr = Box::into_raw(Box::new(value));
+        Self(NonNull::new(ptr).into())
+    }
+    pub fn new_uninit() -> AutoPtr<MaybeUninit<T>> {
+        let ptr = Box::into_raw(Box::new_uninit());
+        AutoPtr(NonNull::new(ptr).into())
+    }
+
+    pub fn new_zeroed() -> AutoPtr<MaybeUninit<T>> {
+        let ptr = Box::into_raw(Box::new_zeroed());
+        AutoPtr(NonNull::new(ptr).into())
+    }
+}
 
 impl<T: ?Sized> Clone for AutoPtr<T> {
     fn clone(&self) -> Self {

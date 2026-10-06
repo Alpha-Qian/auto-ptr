@@ -16,7 +16,7 @@ At the heart of `auto_ptr` is the purest form of RAII. When you initialize an `A
 
 ### ✨ Key Breakthroughs
 
-- 🌊 **Fluid Ownership via `.clone()`**: Forget verbose `std::mem::take` or fighting ownership errors. With `auto_ptr`, calling `.clone()` doesn't waste CPU cycles duplicating data! Instead, it performs a **Zero-Cost Ownership Transfer™**. The new pointer instantly assumes control, seamlessly freeing you from cognitive load!
+- 🌊 **Fluid Ownership via `.move_into()`**: Forget verbose `std::mem::take` or fighting ownership errors. With `auto_ptr`, calling `.move_into()` doesn't waste CPU cycles duplicating data! Instead, it performs a **Zero-Cost Ownership Transfer™**. The new pointer instantly assumes control, seamlessly freeing you from cognitive load!
 - ⚡ **Hardware-Accelerated Safety Checks**: Why rely on slow, software-level bounds checking and bloated panic payloads? `auto_ptr` leverages your CPU's native MMU (Memory Management Unit). Accessing a moved pointer triggers a pristine, zero-overhead **SIGSEGV (Hardware-level Null Pointer Exception)**. It’s security enforced by the silicon itself!
 - 🕊️ **True Elegance**: No lifetimes. No `RefCell`. No `Arc`. Just pure, unadulterated RAII. 
 
@@ -35,7 +35,7 @@ fn main() {
     // 2. Zero-Cost Ownership Transfer™!
     // No expensive deep copies. The resource gracefully flows from 'data' to 'active_data'.
     // The syntax is familiar, but the performance is unmatched!
-    let active_data = data.clone(); 
+    let active_data = data.move_into(); 
     println!("Transferred to active_data: {}", *active_data);
 
     // 3. Hardware-Accelerated Validation
